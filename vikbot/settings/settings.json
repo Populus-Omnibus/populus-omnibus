@@ -1,0 +1,32 @@
+[
+    {
+        "name": "prefix",
+        "data": [],
+        "encryption" : 0
+    },
+    {
+        "name": "voicechannels",
+        "data": [859483191593140244, 859725537274757120, 859768882965512192, 894209703628910602],
+        "encryption": 0
+    },
+    {
+        "name":"newschannels",
+        "data": [739557734705397812, 745883081310732379],
+        "encryption": 0
+    },
+    {
+        "name": "commandschannel",
+        "data": [],
+        "encryption" : 0
+    },
+    {
+        "name": "trelloacc",
+        "data": "",
+        "encryption": 1
+    },
+    {
+        "name":"mcacc",
+        "data": "",
+        "encryption": 1
+    }
+]

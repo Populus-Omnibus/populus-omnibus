@@ -1,0 +1,44 @@
+Lets rock!
+VIKBOT
+741000004172513310
+----------
+resetbuttons is ready
+roleosch is ready
+mcauth is ready
+vik.bme.hu is ready
+slashcog is ready
+voicechannel is ready
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+Serving on ('45.32.155.246', 2222)
+loop
+2021-10-06 19:38:45.989336
+loop
+Job done
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
+loop
