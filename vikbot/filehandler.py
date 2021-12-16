@@ -21,24 +21,50 @@ def decode(msg):
     f = Fernet(key)
 
     decoded = f.decrypt(msg.encode())
-    return decoded
+    return decoded.decode()
+
+def encode(msg):
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
+        backend=default_backend()
+        )
+    key = base64.urlsafe_b64encode(kdf.derive(password))
+    f = Fernet(key)
+
+    encoded = f.encrypt(msg.encode())
+    return encoded.decode()
 
 def readsettings(segment):
-    with open("/home/ubuntu/bots/vikbot/settings/settings.json") as fp:
+    with open("/home/ubuntu/bots/vikbot/settings/settings.json", "r") as fp:
         tmpdict = json.loads(fp.read())
 
-    for dict in tmpdict :  
-        if(dict["name"] == segment):
-            tmpdict = dict
+    for dicts in tmpdict :  
+        if(dicts["name"] == segment):
+            tmpdict = dicts
 
     data = tmpdict["data"]
     if tmpdict["encryption"] == 1 :
-        data = decode(tmpdict["data"])
-        
+        data = decode(msg=tmpdict["data"])
+
     return data
 
 
 def updatesettings(segment, data):
-    print()
 
-print(readsettings("mc_acc"))
+    with open("/home/ubuntu/bots/vikbot/settings/settings.json", "r") as fp:
+        tmpdict = json.loads(fp.read())
+    
+    for dicts in tmpdict:
+        if dicts["name"] == segment:
+            if dicts["encryption"] == 1:
+                dicts["data"] = encode(data)
+            else:
+                dicts["data"] = data
+
+    print(tmpdict)
+
+    with open("/home/ubuntu/bots/vikbot/settings/settings.json", "w") as fp:
+        json.dump(tmpdict, fp)
