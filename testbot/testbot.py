@@ -8,12 +8,6 @@ from datetime import datetime
 prefixes = []
 channelids = []
 
-with open("settings/main_settings.json", "r") as fp:
-    tempdict = json.loads(fp.read())
-    prefixes = tempdict["prefixes"]
-    channelids = tempdict["channels"]
-    print("Settings loaded")
-
 async def get_prefix(client, message):
     if not message.guild:
         return
