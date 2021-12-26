@@ -6,18 +6,15 @@ from discord_slash import client, cog_ext, SlashContext
 from datetime import datetime
 from trello import TrelloClient, board, member
 from trello.customfield import CustomFieldText
-import base64
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.fernet import Fernet
 import json
 import pickle
-import asyncio
 
-password_provided = "asdw"  
-password = password_provided.encode()  
-salt = b'\x81t\xd4C+\x92\x82O\xd0\x18du\xb6}\xcd\x7f'
+import sys
+
+sys.path.append('/home/ubuntu/server')
+
+from filehandler import *
+from updater import *
 
 list_options = [
     {
@@ -130,49 +127,18 @@ def get_client(memberid):
     return tclient
 
 def save_token(tempdict):
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.SHA256(),
-        length=32,
-        salt=salt,
-        iterations=100000,
-        backend=default_backend()
-        )
-    key = base64.urlsafe_b64encode(kdf.derive(password))
-    f = Fernet(key)
 
     loadedtoken = load_token()
     #saveddict = {**tempdict, **loadedtoken}
     saveddict = loadedtoken.copy()
     saveddict.update(tempdict)
-    print(saveddict)
 
-    toencrypt = json.dumps(saveddict).encode()
-    encrypted = f.encrypt(toencrypt).decode()
-
-    with open("trello/token.json", "w") as fp:
-        json.dump(encrypted, fp)
+    updatesettings(segment="trello_acc", data = json.dumps(saveddict))
 
     print("saved token")
 
 def load_token():
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.SHA256(),
-        length=32,
-        salt=salt,
-        iterations=100000,
-        backend=default_backend()
-        )
-    key = base64.urlsafe_b64encode(kdf.derive(password))
-    f = Fernet(key)
-    with open("trello/token.json", "r") as fp:
-        loadeddict = json.loads(fp.read())
-
-    todecrypt = json.dumps(loadeddict).encode()
-    returndict = f.decrypt(todecrypt).decode()
-
-    print(json.loads(returndict))
-    #print(f"\n{key}\n")
-    return json.loads(returndict)
+    return json.loads(readsettings(segment="trello_acc"))
 
 def load_embed():
     with open("trello/embed.pickle","rb") as fp:

@@ -32,12 +32,6 @@ for filename in os.listdir('./cogs'):
         if filename.endswith('.py'):
             client.load_extension(f'cogs.{filename[:-3]}')
 
-def save_settings():
-    tempdict["prefixes"] = prefixes
-    tempdict["channels"] = channelids
-    with open("settings/main_settings.json", "w") as fp:
-        json.dump(tempdict, fp)
-    print("Prefixes saved")
 
 @client.event
 async def on_message(message):
@@ -86,14 +80,14 @@ async def add(ctx, prefix):
     else:
         prefixes.append(prefix)
         await ctx.channel.send(f'Added `{prefix}` to the prefix list. :ok_hand:')
-        save_settings()
+        
 
 @prefix.command()
 async def remove(ctx, prefix):
     if prefix in prefixes:
         prefixes.remove(prefix)
         await ctx.channel.send(f'Removed `{prefix}` from the prefix list.')
-        save_settings()
+        
     else:
         await ctx.channel.send('Nincs ilyen prefix! :angry::anger:')
 
@@ -113,14 +107,14 @@ async def add(ctx, channelid: int):
     else:
         channelids.append(channelid)
         await ctx.channel.send(f'Added `{channelid}` to the command channel list. :ok_hand:')
-        save_settings()
+        
 
 @commandchannel.command()
 async def remove(ctx, channelid: int):
     if channelid in channelids:
         channelids.remove(channelid)
         await ctx.channel.send(f'Removed `{channelid}` from the command channel list.')
-        save_settings()
+        
     else:
         await ctx.channel.send('Nincs ilyen channel! :angry::anger:')
 

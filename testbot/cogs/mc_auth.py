@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands.core import has_guild_permissions
 from discord_slash import cog_ext, SlashContext
 import uuid
 import urllib.request, json 
@@ -78,9 +79,11 @@ class mcauth(commands.Cog):
         else:
             await ctx.send(content="Nem használhatsz online accountot `token`-ként és `displayname`-ként. A `token` és `displayname` nem egyezhet. :triumph:", hidden=True)
 
-    @commands.command()
+    @cog_ext.cog_slash(name="authserver", description="Az mc szerver auth része", options=None, guild_ids=[308599429122883586])
     async def start_server(self, ctx):
-        servertester()
+        await ctx.defer(hidden = True)
+        msg = servertester()
+        await ctx.send(content = msg, hidden = True)
 
 def setup(client):
     client.add_cog(mcauth(client))
