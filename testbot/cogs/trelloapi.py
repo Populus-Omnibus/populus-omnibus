@@ -14,7 +14,6 @@ import sys
 sys.path.append('/home/ubuntu/server')
 
 from filehandler import *
-from updater import *
 
 list_options = [
     {
