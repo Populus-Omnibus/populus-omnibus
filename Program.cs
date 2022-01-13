@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Reflection;
 
+using Populus.Commands;
+
 namespace Populus
 {
     public struct Configuration
@@ -16,22 +18,31 @@ namespace Populus
     public static class Global
     {
         public static string ConfigFile = "Config.txt";
-        public static string execDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        public static Configuration Config = new Configuration();
+        //public static string execDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static Configuration Config;
+        public static DiscordClient Discord { get; private set; } = default!;
         static void Main(string[] args)
         {
             MainAsync().GetAwaiter().GetResult();
         }
         public static async Task MainAsync()
         {
-            if(!LoadConfig()) return;
-            var Discord = new DiscordClient(new DiscordConfiguration()
+            if (!LoadConfig()) return;
+            try
             {
-                Token = Config.DiscordToken,
-                TokenType = TokenType.Bot,
-                Intents = DiscordIntents.AllUnprivileged,
-                MinimumLogLevel = LogLevel.Debug
-            });
+                Discord = new DiscordClient(new DiscordConfiguration()
+                {
+                    Token = Config.DiscordToken,
+                    TokenType = TokenType.Bot,
+                    Intents = DiscordIntents.AllUnprivileged,
+                    MinimumLogLevel = LogLevel.Warning
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
             var commands = Discord.UseCommandsNext(new CommandsNextConfiguration()
             {
                 StringPrefixes = new[] { Config.Prefix }
@@ -43,7 +54,7 @@ namespace Populus
                 Console.WriteLine($"{Discord.CurrentUser.Username}#{Discord.CurrentUser.Discriminator} has connected to Discord!");
             };
             //Discord.MessageCreated += async (s, e) => await discord_Events.MessageReceivedAsync(e.Message);
-            //commands.RegisterCommands<Misc>();
+            slashcommands.RegisterCommands<MiscSlash>(724740489517203550);
             await Discord.ConnectAsync();
             await Task.Delay(-1);
         }
