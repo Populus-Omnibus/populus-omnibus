@@ -43,6 +43,7 @@ namespace Populus.Discord
                 Console.WriteLine($"{discordClient.CurrentUser.Username}#{discordClient.CurrentUser.Discriminator} has connected to Discord!");
             };
             //Discord.MessageCreated += async (s, e) => await discord_Events.MessageReceivedAsync(e.Message);
+            await slashCommands.RefreshCommands();
             slashCommands.RegisterCommands<MiscSlash>(724740489517203550);
             await discordClient.ConnectAsync();
             await Task.Delay(-1);
