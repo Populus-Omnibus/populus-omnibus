@@ -49,5 +49,10 @@ namespace Populus
     {
         public string prefix { get; set; }
         public string discordToken { get; set; }
+        public ulong newsChannel { get; set; }
+        public ulong roleReset { get; set; }
+        public ulong yearSelect { get; set; }
+        public ulong colorSelect { get; set; }
+        public ulong courseSelect { get; set; }
     }
 }
