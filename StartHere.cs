@@ -47,12 +47,23 @@ namespace Populus
 
     public struct DiscordConfig
     {
+        //basic setup
         public string prefix { get; set; }
         public string discordToken { get; set; }
+        //channels
         public ulong newsChannel { get; set; }
         public ulong roleReset { get; set; }
         public ulong yearSelect { get; set; }
         public ulong colorSelect { get; set; }
         public ulong courseSelect { get; set; }
+        //roles
+        public DiscordRoles roles { get; set; }
+    }
+    public struct DiscordRoles
+    {
+        public Dictionary<string, ulong> gamingRoles { get; set; }
+        public Dictionary<string, ulong> yearRoles { get; set; }
+        public Dictionary<string, ulong> courseRoles { get; set; }
+        public Dictionary<string, ulong> colorRoles { get; set; }
     }
 }
