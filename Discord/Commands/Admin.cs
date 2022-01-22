@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Populus;
@@ -11,17 +12,17 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-
 namespace Populus.Discord.Commands
 {
     public class AdminSlash : ApplicationCommandModule
     {
-        [SlashCommand("roleselector", "Sends the message allowing role selection in this channel.")]
+        [SlashCommand("roleselector", "Elküldi a rangválasztást lehetővé tévő üzenetet.")]
         public async Task SlashRoleSelector(InteractionContext ctx,
         [Choice("Évfolyam", 0)]
         [Choice("Szak", 1)]
         [Choice("Gárda", 2)]
-        [Option("select", "Number of days of message history to delete")] long select = 0)
+        [Choice("Reset", 3)]
+        [Option("tipus", "3 választó menü, illetve 1 reset üzenet")] long select)
         {
             if(!ctx.Member.Roles.Where(p => DiscordBot.discordConfig.roles.adminRoles.ContainsValue(p.Id)).Any())
             {
@@ -41,8 +42,11 @@ namespace Populus.Discord.Commands
                 case 1:
                     StartHere.config.discordConfig.courseMessage = RoleSelectorDropdownSend(DiscordBot.discordConfig.roles.courseRoles, "Ebben a képzésben veszel részt", ctx).Id;
                     break;
-                default:
+                case 2:
                     StartHere.config.discordConfig.colorMessage = RoleSelectorDropdownSend(DiscordBot.discordConfig.roles.colorRoles, "A szín aminek tagja vagy", ctx).Id;
+                    break;
+                case 3:
+                    StartHere.config.discordConfig.resetMessage = RoleResetButtonsSend(ctx).Id;
                     break;
             }
             File.WriteAllText(StartHere.configFile, JsonConvert.SerializeObject(StartHere.config, Formatting.Indented));
@@ -52,13 +56,38 @@ namespace Populus.Discord.Commands
             var options = new List<DiscordSelectComponentOption>();
             foreach (var role in selectedRoles)
             {
-                var rolename = Regex.Replace(role.Key, @"\p{Cs}", "");
+                var rolename = Regex.Replace(role.Key, @"\p{Cs}|\p{So}", "");
                 options.Add(new DiscordSelectComponentOption(rolename, rolename, emoji: new DiscordComponentEmoji(role.Key.Replace(rolename, "")))); //wtf why does this work
             }
             var dropdown = new DiscordSelectComponent("dropdown", null, options, false, 0, 1);
             var builder = new DiscordMessageBuilder().WithContent(content).AddComponents(dropdown);
-            var result = builder.SendAsync(ctx.Channel);
-            return result.Result;
+            var result = builder.SendAsync(ctx.Channel).Result;
+            ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+            {
+                Content = "Kész!",
+                IsEphemeral = true
+            });
+            return result;
+        }
+        public DiscordMessage RoleResetButtonsSend(InteractionContext ctx)
+        {
+            var builder = new DiscordMessageBuilder()
+            .WithContent("Visszaállítás, azaz reset gombok:")
+            .AddComponents(new DiscordComponent[]
+            {
+                new DiscordButtonComponent(ButtonStyle.Danger, "rolereset1", "Évfolyam reset", false),
+                new DiscordButtonComponent(ButtonStyle.Secondary, "x1", " ", true),
+                new DiscordButtonComponent(ButtonStyle.Danger, "rolereset2", "Szak reset", false),
+                new DiscordButtonComponent(ButtonStyle.Secondary, "x2", " ", true),     
+                new DiscordButtonComponent(ButtonStyle.Danger, "rolereset3", "Gárda reset", false)
+        });
+            var result = builder.SendAsync(ctx.Channel).Result;
+            ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+            {
+                Content = "Kész!",
+                IsEphemeral = true
+            });
+            return result;
         }
     }
 }
