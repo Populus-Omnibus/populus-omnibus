@@ -8,19 +8,23 @@ using Newtonsoft.Json;
 namespace Populus
 {
     
-    internal class StartHere
+    public class StartHere
     {
-        public static Configuration config;
-        private static string configFile = "config.json";
+        public static Configuration config = new Configuration();
+        public static string configFile = "config.json";
         public static void Main(string[] args)
         {
-            config = LoadConfig();
-
-            if (config.discordConfig != null)
+            try
             {
-                Discord.DiscordBot.MainAsync((DiscordConfig) config.discordConfig).GetAwaiter().GetResult();
+                config = LoadConfig();
+                if (config.discordConfig != null)
+                    Discord.DiscordBot.MainAsync(config.discordConfig).GetAwaiter().GetResult();
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return;
+            }
         }
 
 
@@ -32,7 +36,9 @@ namespace Populus
         {
             if (File.Exists(configFile))
             {
-                return JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(configFile));
+                var result = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(configFile));
+                if (result != null)
+                    return result;
             }
 
             return new Configuration();
@@ -40,14 +46,31 @@ namespace Populus
     }
 
 
-    public struct Configuration
+    public class Configuration
     {
-        public DiscordConfig? discordConfig { get; set; }  
+        public DiscordConfig? discordConfig = default;
     }
 
-    public struct DiscordConfig
+    public class DiscordConfig
     {
-        public string prefix { get; set; }
-        public string discordToken { get; set; }
+        //basic setup
+        public string prefix { get; set; } = default!;
+        public string discordToken { get; set; } = default!;
+        //channels
+        public ulong newsChannel { get; set; }
+        //roles
+        public DiscordRoles roles { get; set; } = default!;
+        public ulong yearMessage { get; set; }
+        public ulong courseMessage { get; set; }        
+        public ulong colorMessage { get; set; }
+        public ulong resetMessage { get; set; }
+    }
+    public class DiscordRoles
+    {
+        public Dictionary<string, ulong> gamingRoles { get; set; } = default!;
+        public Dictionary<string, ulong> yearRoles { get; set; } = default!;
+        public Dictionary<string, ulong> courseRoles { get; set; } = default!;
+        public Dictionary<string, ulong> colorRoles { get; set; } = default!;
+        public Dictionary<string, ulong> adminRoles { get; set; } = default!;
     }
 }

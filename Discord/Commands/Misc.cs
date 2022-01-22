@@ -16,11 +16,7 @@ namespace Populus.Discord.Commands
         [SlashCommand("ping", "Returns the current latency of the Discord bot.")]
         public async Task SlashPing(InteractionContext ctx)
         {
-            var responseBuilder = new DiscordInteractionResponseBuilder()
-            {
-                Content = $"{DiscordBot.discordClient.Ping} ms"
-            };
-            await ctx.CreateResponseAsync(responseBuilder);
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent($"{DiscordBot.discordClient.Ping} ms").AsEphemeral(true));
         }
     }
 }
