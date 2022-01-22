@@ -41,7 +41,8 @@ namespace Populus.Discord
                 await s.UpdateStatusAsync(new DSharpPlus.Entities.DiscordActivity("vibing"));
                 Console.WriteLine($"{discordClient.CurrentUser.Username}#{discordClient.CurrentUser.Discriminator} has connected to Discord!");
             };
-            //Discord.MessageCreated += async (s, e) => await discord_Events.MessageReceivedAsync(e.Message);
+            //discordClient.MessageCreated += async (s, e) => await Events.MessageReceivedAsync(e.Message);
+            discordClient.ComponentInteractionCreated += async (s, e) => await Events.ComponentInteractionCreatedAsync(e);
             await slashCommands.RefreshCommands();
             slashCommands.RegisterCommands<MiscSlash>(724740489517203550);
             slashCommands.RegisterCommands<AdminSlash>(724740489517203550);
