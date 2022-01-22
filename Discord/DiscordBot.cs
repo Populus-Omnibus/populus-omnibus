@@ -8,20 +8,19 @@ using Populus.Discord.Commands;
 
 namespace Populus.Discord
 {
-
-
     public static class DiscordBot
     {
         public static DiscordClient discordClient { get; private set; } = default!;
+        public static DiscordConfig discordConfig = new DiscordConfig();
 
         public static async Task MainAsync(DiscordConfig config)
         {
-
+            discordConfig = config;
             try
             {
                 discordClient = new DiscordClient(new DiscordConfiguration()
                 {
-                    Token = config.discordToken,
+                    Token = discordConfig.discordToken,
                     TokenType = TokenType.Bot,
                     Intents = DiscordIntents.AllUnprivileged,
                     MinimumLogLevel = LogLevel.Warning
@@ -34,7 +33,7 @@ namespace Populus.Discord
             }
             var commands = discordClient.UseCommandsNext(new CommandsNextConfiguration()
             {
-                StringPrefixes = new[] { config.prefix }
+                StringPrefixes = new[] { discordConfig.prefix }
             });
             var slashCommands = discordClient.UseSlashCommands();
             discordClient.Ready += async (s, e) =>
@@ -45,6 +44,7 @@ namespace Populus.Discord
             //Discord.MessageCreated += async (s, e) => await discord_Events.MessageReceivedAsync(e.Message);
             await slashCommands.RefreshCommands();
             slashCommands.RegisterCommands<MiscSlash>(724740489517203550);
+            slashCommands.RegisterCommands<AdminSlash>(724740489517203550);
             await discordClient.ConnectAsync();
             await Task.Delay(-1);
         }
