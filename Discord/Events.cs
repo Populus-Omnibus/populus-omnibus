@@ -14,7 +14,7 @@ namespace Populus.Discord
     {
         public static async Task ComponentInteractionCreatedAsync(ComponentInteractionCreateEventArgs eventArgs)
         {
-            var config = StartHere.config.discordConfig;
+            var config = DiscordBot.discordConfig;
             if (eventArgs.Message.Id == config.yearMessage)
                 await AddSingleRole(config.roles.yearRoles, eventArgs);
             else if (eventArgs.Message.Id == config.courseMessage)

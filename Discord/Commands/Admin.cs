@@ -37,16 +37,16 @@ namespace Populus.Discord.Commands
             switch (select)
             {
                 case 0:
-                    StartHere.config.discordConfig.yearMessage = RoleSelectorDropdownSend(DiscordBot.discordConfig.roles.yearRoles, "Az év amikor felvettek ide", ctx).Id;
+                    DiscordBot.discordConfig.yearMessage = RoleSelectorDropdownSend(DiscordBot.discordConfig.roles.yearRoles, "Az év amikor felvettek ide", ctx).Id;
                     break;
                 case 1:
-                    StartHere.config.discordConfig.courseMessage = RoleSelectorDropdownSend(DiscordBot.discordConfig.roles.courseRoles, "Ebben a képzésben veszel részt", ctx).Id;
+                    DiscordBot.discordConfig.courseMessage = RoleSelectorDropdownSend(DiscordBot.discordConfig.roles.courseRoles, "Ebben a képzésben veszel részt", ctx).Id;
                     break;
                 case 2:
-                    StartHere.config.discordConfig.colorMessage = RoleSelectorDropdownSend(DiscordBot.discordConfig.roles.colorRoles, "A szín aminek tagja vagy", ctx).Id;
+                    DiscordBot.discordConfig.colorMessage = RoleSelectorDropdownSend(DiscordBot.discordConfig.roles.colorRoles, "A szín aminek tagja vagy", ctx).Id;
                     break;
                 case 3:
-                    StartHere.config.discordConfig.resetMessage = RoleResetButtonsSend(ctx).Id;
+                    DiscordBot.discordConfig.resetMessage = RoleResetButtonsSend(ctx).Id;
                     break;
             }
             File.WriteAllText(StartHere.configFile, JsonConvert.SerializeObject(StartHere.config, Formatting.Indented));
