@@ -8,19 +8,22 @@ using Newtonsoft.Json;
 namespace Populus
 {
     
-    internal class StartHere
+    public class StartHere
     {
-        public static Configuration config;
-        private static string configFile = "config.json";
+        public static Configuration config = new Configuration();
+        public static string configFile = "config.json";
         public static void Main(string[] args)
         {
-            config = LoadConfig();
-
-            if (config.discordConfig != null)
+            try
             {
-                Discord.DiscordBot.MainAsync((DiscordConfig) config.discordConfig).GetAwaiter().GetResult();
+                config = LoadConfig();
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return;
+            }
+            Discord.DiscordBot.MainAsync((DiscordConfig) config.discordConfig).GetAwaiter().GetResult();
         }
 
 
@@ -42,7 +45,7 @@ namespace Populus
 
     public struct Configuration
     {
-        public DiscordConfig? discordConfig { get; set; }  
+        public DiscordConfig discordConfig = default;
     }
 
     public struct DiscordConfig
@@ -52,12 +55,12 @@ namespace Populus
         public string discordToken { get; set; }
         //channels
         public ulong newsChannel { get; set; }
-        public ulong roleReset { get; set; }
-        public ulong yearSelect { get; set; }
-        public ulong colorSelect { get; set; }
-        public ulong courseSelect { get; set; }
         //roles
         public DiscordRoles roles { get; set; }
+        public ulong yearMessage { get; set; }
+        public ulong courseMessage { get; set; }        
+        public ulong colorMessage { get; set; }
+        public ulong resetMessage { get; set; }
     }
     public struct DiscordRoles
     {
@@ -65,5 +68,6 @@ namespace Populus
         public Dictionary<string, ulong> yearRoles { get; set; }
         public Dictionary<string, ulong> courseRoles { get; set; }
         public Dictionary<string, ulong> colorRoles { get; set; }
+        public Dictionary<string, ulong> adminRoles { get; set; }
     }
 }
