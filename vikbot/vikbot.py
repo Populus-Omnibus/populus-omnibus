@@ -13,7 +13,7 @@ intents = discord.Intents.all()
 
 client = commands.Bot(command_prefix = get_prefix, intents = intents, status = discord.Status.idle, activity=discord.Game(name="Booting.."))
 slash = SlashCommand(client, sync_commands=True, sync_on_cog_reload = True)
-status = cycle(['Rossz csatorna', 'E M B E R', 'Literálisan cringe'])
+#status = cycle(['Rossz csatorna', 'E M B E R', 'Literálisan cringe'])
 
 #botspam
 channelids =[739567794533826616, 745624827368570930]
