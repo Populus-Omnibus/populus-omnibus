@@ -115,7 +115,7 @@ class slash_command_support(commands.Cog):
         }
     ]
 
-    @cog_ext.cog_slash(name="ping", description = "Tells you the ping", guild_ids = [308599429122883586], options = ping_options)
+    @cog_ext.cog_slash(name="ping", description = "Tells you the ping", guild_ids = [308599429122883586, 737284142462402560], options = ping_options)
     async def test(self, ctx: SlashContext, joke = True):
         #await ctx.defer()
         if(joke):

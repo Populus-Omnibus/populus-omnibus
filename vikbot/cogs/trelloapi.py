@@ -264,7 +264,7 @@ class trelloapi(commands.Cog):
             msg = await csanel.fetch_message(pages_json[str(member.id)]["message"])
             await msg.delete(delay=None)
 
-    @cog_ext.cog_slash(name="login", description="Adatok megadása amivel hozzáférsz a trellohoz", guild_ids=[308599429122883586], options=login_options)
+    @cog_ext.cog_slash(name="login", description="Adatok megadása amivel hozzáférsz a trellohoz", guild_ids=[308599429122883586, 642814459051638807], options=login_options)
     async def login_slash(self, ctx: SlashContext, api_key,api_secret ,token):
         tokendict = {}
         tempdict={}
@@ -275,7 +275,7 @@ class trelloapi(commands.Cog):
         save_token(tempdict=tempdict)
         await ctx.send(content="Mentve", hidden=True)
 
-    @cog_ext.cog_slash(name="mytrello", description = "Listázza az általad használt trello boardokat", guild_ids=[308599429122883586], options=None)
+    @cog_ext.cog_slash(name="mytrello", description = "Listázza az általad használt trello boardokat", guild_ids=[308599429122883586, 642814459051638807], options=None)
     async def mypolls_slash(self, ctx: SlashContext):
         all_boards = get_client(memberid=ctx.author.id).list_boards()
         for count, x in enumerate(all_boards):
@@ -288,18 +288,18 @@ class trelloapi(commands.Cog):
             tboard.add_field(name="Boardinfo", value=f"Name: {x.name}\nLeírás: {x.description}\nSorszám: {count}/{len(all_boards)-1}", inline=True)
             await ctx.send(embed=tboard, hidden = True)
 
-    @cog_ext.cog_slash(name="createlist", description="Csinál egy listát egy adott boardon", options=list_options)
+    @cog_ext.cog_slash(name="createlist", description="Csinál egy listát egy adott boardon", options=list_options, guild_ids=[308599429122883586, 642814459051638807])
     async def createlist_slash(self, ctx: SlashContext, boardid=0, listname = "", position=0):
         await ctx.defer(hidden=True)
         all_boards = get_client(memberid=ctx.author.id).list_boards()
         created_list = all_boards[boardid].add_list(name=listname, pos=position)
         await ctx.send(content=f"Created list: {created_list}", hidden=True)
 
-    @cog_ext.cog_slash(name="createcard", description="Csinál egy trello cardot egy adott boardon", options=createcard_options)
+    @cog_ext.cog_slash(name="createcard", description="Csinál egy trello cardot egy adott boardon", options=createcard_options, guild_ids=[308599429122883586, 642814459051638807])
     async def createcard_slash(self, ctx: SlashContext):
         print("card created")
 
-    @cog_ext.cog_slash(name="comment", description="Kommentel egy adott cardhoz", options=comment_options)
+    @cog_ext.cog_slash(name="comment", description="Kommentel egy adott cardhoz", options=comment_options, guild_ids=[308599429122883586, 642814459051638807])
     async def comment_slash(self, ctx: SlashContext, comment = "", boardid = 0, listid = 0, cardid = 0):
         await ctx.defer(hidden=True)
         all_boards = get_client(memberid=ctx.author.id).list_boards()
@@ -309,7 +309,7 @@ class trelloapi(commands.Cog):
         await ctx.send(content=f"Kommentáltál ide: {cards[cardid].name}\nEzt: {comment}", hidden=True)
         print("commented")
 
-    @cog_ext.cog_slash(name="lists", description="Kiírja az open listákat egy adott boardon", options=lists_options)
+    @cog_ext.cog_slash(name="lists", description="Kiírja az open listákat egy adott boardon", options=lists_options, guild_ids=[308599429122883586, 642814459051638807])
     async def lists_slash(self, ctx: SlashContext, boardid):
         pages_json = {}
         temp_pages = []

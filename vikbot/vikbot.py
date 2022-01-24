@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import os
 from itertools import cycle
 from discord_slash import SlashCommand, SlashCommandOptionType
+import asyncio
 
 async def get_prefix(client, message):
     if not message.guild:
@@ -13,6 +14,7 @@ intents = discord.Intents.all()
 
 client = commands.Bot(command_prefix = get_prefix, intents = intents, status = discord.Status.idle, activity=discord.Game(name="Booting.."))
 slash = SlashCommand(client, sync_commands=True, sync_on_cog_reload = True)
+
 #status = cycle(['Rossz csatorna', 'E M B E R', 'Literálisan cringe'])
 
 #botspam
@@ -22,6 +24,25 @@ prefixes = []
 
 #--------------------------------------------------------------------------------------------------------------
 
+async def load_cogs():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            client.load_extension(f'cogs.{filename[:-3]}')
+            await asyncio.sleep(1)
+
+async def reload_cogs():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            client.reload_extension(f'cogs.{filename[:-3]}')
+            await asyncio.sleep(1)
+        
+def unload_cogs():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            client.unload_extension(f'cogs.{filename[:-3]}')
+
+asyncio.run(load_cogs())
+
 @client.event
 async def on_ready():
 		print('Lets rock!')
@@ -30,10 +51,6 @@ async def on_ready():
 		print("----------")
 		#await client.change_presence(status=discord.Status.online, activity=discord.Game(name="with fire"))
 		await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="@vikbot"))
-
-for filename in os.listdir('./cogs'):
-        if filename.endswith('.py'):
-            client.load_extension(f'cogs.{filename[:-3]}')
 
 @client.event
 async def on_message(message):
@@ -80,6 +97,20 @@ async def list(ctx):
     for x in prefixes:
         msg = msg+ msgs+ x+'] '
     await ctx.channel.send(f'```{msg}```')
+
+
+@client.command()
+async def loadcogs(ctx):
+    load_cogs()
+
+@client.command()
+async def unloadcogs(ctx):
+    unload_cogs()
+
+@client.command()
+async def reloadcogs(ctx):
+    reload_cogs()
+    
 
 @client.group(brief = 'Cog maincommand')
 async def cog(ctx):

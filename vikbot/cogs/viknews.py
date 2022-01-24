@@ -111,7 +111,7 @@ class viknews_by_BoA(commands.Cog):
         embed.set_footer(text=news_list[0].date[:-9])
         await ctx.channel.send(embed=embed)
 
-    @cog_ext.cog_slash(name="add_news_channel", description="Beállítja a channelt, amibe az új hírek fognak menni.", guild_ids=[], options=addch)
+    @cog_ext.cog_slash(name="add_news_channel", description="Beállítja a channelt, amibe az új hírek fognak menni.", guild_ids=[737284142462402560, 308599429122883586], options=addch)
     async def set_news_channel(self, ctx: SlashContext, channel):
         await ctx.defer(hidden=True)
 
@@ -126,7 +126,7 @@ class viknews_by_BoA(commands.Cog):
         updatesettings(segment = "newschannels", data = lib)
         await ctx.send(content=f"Saved newschannel: {channel.name}  with ID: `{channel.id}`", hidden=True)
 
-    @cog_ext.cog_slash(name="get_news_channel", description="Mutatja az összes newschannelt", default_permission=False, options=None, guild_ids=[])
+    @cog_ext.cog_slash(name="get_news_channel", description="Mutatja az összes newschannelt", default_permission=False, options=None, guild_ids=[737284142462402560, 308599429122883586])
     async def _get_news_channels(self, ctx: SlashContext):
         ctx.defer(hidden=True)
 
@@ -144,7 +144,7 @@ class viknews_by_BoA(commands.Cog):
 
         await ctx.send(embed = embed, hidden=True)
 
-    @cog_ext.cog_slash(name="remove_news_channel", description="Beállítja a channelt, amibe az új hírek fognak menni.", guild_ids=[], options=rmch)
+    @cog_ext.cog_slash(name="remove_news_channel", description="Beállítja a channelt, amibe az új hírek fognak menni.", guild_ids=[737284142462402560, 308599429122883586], options=rmch)
     async def remove_news_channel(self, ctx: SlashContext, channel):
         await ctx.defer(hidden=True)
 

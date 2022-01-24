@@ -38,7 +38,7 @@ class voicechannel(commands.Cog):
     async def on_ready(self):
         print('voicechannel is ready')
 
-    @cog_ext.cog_slash(name="add_dynamic_channel", description="Ezzel adsz hozzá dinamikus voiceot a rendszerhez", options=pchannel_options, guild_ids=[308599429122883586])
+    @cog_ext.cog_slash(name="add_dynamic_channel", description="Ezzel adsz hozzá dinamikus voiceot a rendszerhez", options=pchannel_options, guild_ids=[308599429122883586, 737284142462402560])
     async def set_parentchannel(self, ctx: SlashContext, channel):
         await ctx.defer(hidden=True)
 
@@ -52,7 +52,7 @@ class voicechannel(commands.Cog):
         updatesettings(segment="voicechannels", data= lib)
         await ctx.send(content=f"Saved voicechannel: {channel.name}  with ID: `{channel.id}`", hidden=True)
 
-    @cog_ext.cog_slash(name="get_dynamic_channels", description="Az összes létező parentchannel", options=None, guild_ids=[308599429122883586])
+    @cog_ext.cog_slash(name="get_dynamic_channels", description="Az összes létező parentchannel", options=None, guild_ids=[308599429122883586, 737284142462402560])
     async def get_parentchannels(self, ctx):
         await ctx.defer(hidden = True)
 
@@ -72,7 +72,7 @@ class voicechannel(commands.Cog):
 
         await ctx.send(embed = embed, hidden = True)
 
-    @cog_ext.cog_slash(name="remove_dynamic_channels", description="Töröl egy adott dinamikus voiceot", options=remove_pchannel_options, guild_ids=[308599429122883586])
+    @cog_ext.cog_slash(name="remove_dynamic_channels", description="Töröl egy adott dinamikus voiceot", options=remove_pchannel_options, guild_ids=[308599429122883586, 737284142462402560])
     async def remove_parentchannel(self, ctx: SlashContext, channel):
         await ctx.defer(hidden = True)
 

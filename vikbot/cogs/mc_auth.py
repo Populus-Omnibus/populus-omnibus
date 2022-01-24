@@ -38,7 +38,7 @@ class mcauth(commands.Cog):
     async def testcog_mcauth(self, ctx):
         await ctx.send("Cog is ready")
 
-    @cog_ext.cog_slash(name="token", description="Megmutatja a regisztrált tokent", options=None, guild_ids=[308599429122883586])
+    @cog_ext.cog_slash(name="token", description="Megmutatja a regisztrált tokent", options=None, guild_ids=[308599429122883586, 737284142462402560])
     async def token_slash(self, ctx: SlashContext):
         await ctx.defer(hidden=True)
         tmpdict = json.loads(readsettings(segment="mc_acc"))
@@ -46,7 +46,7 @@ class mcauth(commands.Cog):
         dpname = tmpdict[str(ctx.author.id)]["displayname"]
         await ctx.send(content=f"Token: {token} | Displayname: {dpname}", hidden=True)
 
-    @cog_ext.cog_slash(name="mcauth", description="Nem eredetis játékosok ezzel tudnak karaktert regisztrálni", options=auth_options, guild_ids=[308599429122883586])
+    @cog_ext.cog_slash(name="mcauth", description="Nem eredetis játékosok ezzel tudnak karaktert regisztrálni", options=auth_options, guild_ids=[308599429122883586, 737284142462402560])
     async def mcauth_slash(self, ctx: SlashContext, token, displayname):
         await ctx.defer(hidden=True)
         tmpdict = json.loads(readsettings(segment="mc_acc"))
@@ -78,13 +78,13 @@ class mcauth(commands.Cog):
         else:
             await ctx.send(content="Nem használhatsz online accountot `token`-ként és `displayname`-ként. A `token` és `displayname` nem egyezhet. :triumph:", hidden=True)
 
-    @cog_ext.cog_slash(name = "startserver", description="Auth szerver indítása", options=None, guild_ids=[308599429122883586])
+    @cog_ext.cog_slash(name = "startserver", description="Auth szerver indítása", options=None, guild_ids=[308599429122883586, 737284142462402560])
     async def start_server(self, ctx):
         await ctx.defer(hidden = True)
         msg = servertester()
         await ctx.send(content = msg, hidden = True)
 
-    @cog_ext.cog_slash(name="killserver", description="Auth szerver kinyírása", options=None, guild_ids=[308599429122883586])
+    @cog_ext.cog_slash(name="killserver", description="Auth szerver kinyírása", options=None, guild_ids=[308599429122883586, 737284142462402560])
     async def kill_server(self, ctx):
         await ctx.defer(hidden = True)
         msg = serverkill()
