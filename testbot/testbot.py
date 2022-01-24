@@ -1,9 +1,9 @@
+import asyncio
 import discord
 import os
 from discord.ext import commands
 from discord_slash import SlashCommand
-import json
-from datetime import datetime
+import interactions
 
 prefixes = []
 channelids = []
@@ -17,7 +17,25 @@ intents = discord.Intents.all()
 
 client = commands.Bot(command_prefix = get_prefix, intents = intents, status = discord.Status.idle, activity=discord.Game(name="Booting..."))
 
-slash = SlashCommand(client, sync_commands=True, sync_on_cog_reload = True)
+slash = SlashCommand(client, sync_commands=True, delete_from_unused_guilds=True, debug_guild=308599429122883586)
+
+async def load_cogs():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            client.load_extension(f'cogs.{filename[:-3]}')
+            await asyncio.sleep(1)
+
+def reload_cogs():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            client.reload_extension(f'cogs.{filename[:-3]}')
+        
+def unload_cogs():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            client.unload_extension(f'cogs.{filename[:-3]}')
+
+asyncio.run(load_cogs())
 
 @client.event
 async def on_ready():
@@ -26,12 +44,7 @@ async def on_ready():
 		print(client.user.id)
 		print(client.guilds)
 		print("----------")
-		await client.change_presence(activity=discord.Activity(name='Duck Hunt', type=5, details="doing some shit", large_image_url="https://imgur.com/lEquJkV"))
-
-for filename in os.listdir('./cogs'):
-        if filename.endswith('.py'):
-            client.load_extension(f'cogs.{filename[:-3]}')
-
+		await client.change_presence(activity=discord.Activity(application_id= 356869127241072640, name='League of Legends', type=1, state = "In ARAM"))
 
 @client.event
 async def on_message(message):
@@ -48,6 +61,18 @@ async def on_command_error(ctx, errors):
 @client.command()
 async def ping(ctx):
     await ctx.send(f'{client.latency}')
+
+@client.command()
+async def loadcogs(ctx):
+    load_cogs()
+
+@client.command()
+async def unloadcogs(ctx):
+    unload_cogs()
+
+@client.command()
+async def reloadcogs(ctx):
+    reload_cogs()
     
 @client.command(description='Kills the bot')
 async def kys(ctx):
@@ -67,6 +92,7 @@ async def coglist(ctx):
     cogs = commands.Bot.cogs
     await ctx.channel.send(f"{lista}\n{cogs}")
 
+"""
 @client.group()
 async def prefix(ctx):
     if ctx.invoked_subcommand is None:
@@ -132,6 +158,7 @@ async def list(ctx):
             embed.add_field(name=ch.name, value=f"Id: {x}\n Guild: {ch.guild}\n Category: {ch.category}\n Position: {ch.position}")
 
     await ctx.send(embed = embed)
+"""
 
-client.run("NzQxMjAxNzg2NjA1NDA0MTgw.Xy0H9A.U5CE2BHFoq0Z60Xsk5-I4CaBnLc")
+client.run("NzQxMjAxNzg2NjA1NDA0MTgw.Xy0H9A.0JhGHYXkVpN8RReeTFNkNEFCUqw")
 

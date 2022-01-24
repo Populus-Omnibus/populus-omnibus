@@ -11,8 +11,6 @@ from datetime import datetime, timedelta
 import pytz
 import asyncio
 
-from trello import label
-
 buttons = [
             create_button(
                 style=ButtonStyle.green,

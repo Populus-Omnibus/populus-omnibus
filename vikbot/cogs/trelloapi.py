@@ -1,26 +1,19 @@
-from re import T
 import discord
 from discord import embeds
 from discord.embeds import EmbedProxy
 from discord.ext import commands, tasks
-from discord.ext.commands.errors import NoEntryPointError
-from discord.team import Team
 from discord_slash import client, cog_ext, SlashContext
 from datetime import datetime
-from trello import TrelloClient, board, card, member
+from trello import TrelloClient, board, member
 from trello.customfield import CustomFieldText
-import base64
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.fernet import Fernet
 import json
 import pickle
-import asyncio
 
-password_provided = "asdw"  
-password = password_provided.encode()  
-salt = b'\x81t\xd4C+\x92\x82O\xd0\x18du\xb6}\xcd\x7f'
+import sys
+
+sys.path.append('/home/ubuntu/server')
+
+from filehandler import *
 
 list_options = [
     {
@@ -115,109 +108,6 @@ createcard_options = [
         "description":"A list sorszáma",
         "required": True,
         "type":4
-    },
-        {
-        "name":"name",
-        "description":"A card neve",
-        "required": True,
-        "type":3
-    },
-        {
-        "name":"description",
-        "description":"A card leírása",
-        "required": False,
-        "type":3
-    },
-        {
-        "name":"clonefrom",
-        "description":"Ha cardot szeretnél klónozni",
-        "required": False,
-        "type":4
-    },
-        {
-        "name":"position",
-        "description":"Ha specifikus helyre szeretnéd rakni",
-        "required": False,
-        "type":4
-    }
-]
-
-editlist_options=[
-    {
-        "name":"boardid",
-        "description":"A board sorszáma",
-        "required": True,
-        "type":4
-    },
-    {
-        "name":"listid",
-        "description":"A list sorszáma",
-        "required": True,
-        "type":4
-    },
-    {
-        "name":"name",
-        "description":"A list új neve",
-        "required": False,
-        "type":3
-    },
-    {
-        "name":"position",
-        "description":"A lista pozíciója",
-        "required": False,
-        "type":4
-    },
-    {
-        "name":"closed",
-        "description":"Ha True, akkor archiválja a listet",
-        "required": False,
-        "type":5
-    }
-
-]
-
-editcard_options = [
-        {
-        "name":"boardid",
-        "description":"A board sorszáma",
-        "required": True,
-        "type":4
-    },
-    {
-        "name":"listid",
-        "description":"A list sorszáma",
-        "required": True,
-        "type":4
-    },
-    {
-        "name":"cardid",
-        "description":"A card sorszáma",
-        "required": True,
-        "type":4
-    },
-    {
-        "name":"changelist",
-        "description":"A list sorszáma, ahova áthelyezed",
-        "required": False,
-        "type":4
-    },
-    {
-        "name":"changepos",
-        "description":"A card sorszáma a listen belül",
-        "required": False,
-        "type":4
-    },
-    {
-        "name":"delete",
-        "description":"Ha True, akkor törölni fogja a cardot",
-        "required": False,
-        "type":5
-    },
-    {
-        "name":"name",
-        "description":"A card új neve",
-        "required": False,
-        "type":3
     }
 ]
 
@@ -236,49 +126,18 @@ def get_client(memberid):
     return tclient
 
 def save_token(tempdict):
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.SHA256(),
-        length=32,
-        salt=salt,
-        iterations=100000,
-        backend=default_backend()
-        )
-    key = base64.urlsafe_b64encode(kdf.derive(password))
-    f = Fernet(key)
 
     loadedtoken = load_token()
     #saveddict = {**tempdict, **loadedtoken}
     saveddict = loadedtoken.copy()
     saveddict.update(tempdict)
-    print(saveddict)
 
-    toencrypt = json.dumps(saveddict).encode()
-    encrypted = f.encrypt(toencrypt).decode()
-
-    with open("trello/token.json", "w") as fp:
-        json.dump(encrypted, fp)
+    updatesettings(segment="trello_acc", data = json.dumps(saveddict))
 
     print("saved token")
 
 def load_token():
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.SHA256(),
-        length=32,
-        salt=salt,
-        iterations=100000,
-        backend=default_backend()
-        )
-    key = base64.urlsafe_b64encode(kdf.derive(password))
-    f = Fernet(key)
-    with open("trello/token.json", "r") as fp:
-        loadeddict = json.loads(fp.read())
-
-    todecrypt = json.dumps(loadeddict).encode()
-    returndict = f.decrypt(todecrypt).decode()
-
-    print(json.loads(returndict))
-    #print(f"\n{key}\n")
-    return json.loads(returndict)
+    return json.loads(readsettings(segment="trello_acc"))
 
 def load_embed():
     with open("trello/embed.pickle","rb") as fp:
@@ -405,7 +264,7 @@ class trelloapi(commands.Cog):
             msg = await csanel.fetch_message(pages_json[str(member.id)]["message"])
             await msg.delete(delay=None)
 
-    @cog_ext.cog_slash(name="login", description="Adatok megadása amivel hozzáférsz a trellohoz", guild_ids=[642814459051638807], options=login_options)
+    @cog_ext.cog_slash(name="login", description="Adatok megadása amivel hozzáférsz a trellohoz", guild_ids=[308599429122883586], options=login_options)
     async def login_slash(self, ctx: SlashContext, api_key,api_secret ,token):
         tokendict = {}
         tempdict={}
@@ -416,7 +275,7 @@ class trelloapi(commands.Cog):
         save_token(tempdict=tempdict)
         await ctx.send(content="Mentve", hidden=True)
 
-    @cog_ext.cog_slash(name="mytrello", description = "Listázza az általad használt trello boardokat", guild_ids=[642814459051638807], options=None)
+    @cog_ext.cog_slash(name="mytrello", description = "Listázza az általad használt trello boardokat", guild_ids=[308599429122883586], options=None)
     async def mypolls_slash(self, ctx: SlashContext):
         all_boards = get_client(memberid=ctx.author.id).list_boards()
         for count, x in enumerate(all_boards):
@@ -429,62 +288,18 @@ class trelloapi(commands.Cog):
             tboard.add_field(name="Boardinfo", value=f"Name: {x.name}\nLeírás: {x.description}\nSorszám: {count}/{len(all_boards)-1}", inline=True)
             await ctx.send(embed=tboard, hidden = True)
 
-    @cog_ext.cog_slash(name="createlist", description="Csinál egy listát egy adott boardon", guild_ids=[642814459051638807], options=list_options)
-    async def createlist_slash(self, ctx: SlashContext, boardid=0, listname = "", position=None):
+    @cog_ext.cog_slash(name="createlist", description="Csinál egy listát egy adott boardon", options=list_options)
+    async def createlist_slash(self, ctx: SlashContext, boardid=0, listname = "", position=0):
         await ctx.defer(hidden=True)
         all_boards = get_client(memberid=ctx.author.id).list_boards()
         created_list = all_boards[boardid].add_list(name=listname, pos=position)
         await ctx.send(content=f"Created list: {created_list}", hidden=True)
-    
-    @cog_ext.cog_slash(name="editlist", description="List elemeket tudsz szerkeszteni", guild_ids=[642814459051638807], options=editlist_options)
-    async def editlist_slash(self, ctx: SlashContext, boardid =0, listid = 0, name = None,  position = None, closed = None):
-        await ctx.defer(hidden=True)
-        all_boards = get_client(memberid=ctx.author.id).list_boards()
-        lists = all_boards[boardid].open_lists()
-        if position != None:
-            lists[listid].move(position=position)
-        if closed:
-            lists[listid].close()
-        if name != None:
-            lists[listid].set_name(name=name)
-        if name == None and position == None and closed == None:
-            await ctx.send(content=":unicorn:")
-        else:
-            await ctx.send(content="Sikeresen módosítottad a listet", hidden=True)
-        print("edited list")
 
-    @cog_ext.cog_slash(name="editcard", description="Card elemeket tudsz szerkeszteni", guild_ids=[642814459051638807], options=editcard_options)
-    async def editcard_slash(self, ctx: SlashContext, boardid = 0, listid = 0, cardid = 0, changelist = None, changepos = None, delete = None, name = None):
-        await ctx.defer(hidden=True)
-        all_boards = get_client(memberid=ctx.author.id).list_boards()
-        lists = all_boards[boardid].open_lists()
-        cards = lists[listid].list_cards()
-        if changelist != None:
-            cards[cardid].change_list(list_id=changelist)
-        if changepos != None:
-            cards[cardid].change_pos(position=changepos)
-        if delete:
-            cards[cardid].delete()
-        if name != None:
-            cards[cardid].set_name(new_name=name)
-
-        if name == None and changelist == None and delete == None and changepos == None:
-            await ctx.send(content=":unicorn:")
-        else:
-            await ctx.send(content="Sikeresen módosítottad a cardot", hidden=True)
-        
-        print("edited card")
-
-    @cog_ext.cog_slash(name="createcard", description="Csinál egy trello cardot egy adott boardon", guild_ids=[642814459051638807], options=createcard_options)
-    async def createcard_slash(self, ctx: SlashContext, boardid = 0, listid = 0, name = "", description = None, clonefrom = None, position = None):
-        await ctx.defer(hidden=True)
-        all_boards = get_client(memberid=ctx.author.id).list_boards()
-        lists = all_boards[boardid].open_lists()
-        created_card = lists[listid].add_card(name=name, desc=description, source=clonefrom, position=position)
-        await ctx.send(content=f"Card létrehozva: {created_card}", hidden=True)
+    @cog_ext.cog_slash(name="createcard", description="Csinál egy trello cardot egy adott boardon", options=createcard_options)
+    async def createcard_slash(self, ctx: SlashContext):
         print("card created")
 
-    @cog_ext.cog_slash(name="comment", description="Kommentel egy adott cardhoz", guild_ids=[642814459051638807], options=comment_options)
+    @cog_ext.cog_slash(name="comment", description="Kommentel egy adott cardhoz", options=comment_options)
     async def comment_slash(self, ctx: SlashContext, comment = "", boardid = 0, listid = 0, cardid = 0):
         await ctx.defer(hidden=True)
         all_boards = get_client(memberid=ctx.author.id).list_boards()
@@ -494,7 +309,7 @@ class trelloapi(commands.Cog):
         await ctx.send(content=f"Kommentáltál ide: {cards[cardid].name}\nEzt: {comment}", hidden=True)
         print("commented")
 
-    @cog_ext.cog_slash(name="lists", description="Kiírja az open listákat egy adott boardon", guild_ids=[642814459051638807], options=lists_options)
+    @cog_ext.cog_slash(name="lists", description="Kiírja az open listákat egy adott boardon", options=lists_options)
     async def lists_slash(self, ctx: SlashContext, boardid):
         pages_json = {}
         temp_pages = []

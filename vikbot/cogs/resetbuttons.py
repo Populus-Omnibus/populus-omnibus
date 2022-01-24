@@ -41,12 +41,8 @@ class resetbuttons(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('resetbuttons is ready')
-
-    @commands.command()
-    async def testcog_resetbuttons(self, ctx):
-        await ctx.send("Cog is ready")
     
-    @commands.command(hidden=True)
+    @cog_ext.cog_slash(name="resetbuttons", description="Resetbutton menüsor", options=None, guild_ids=[308599429122883586])
     async def buttons(self, ctx):
         await ctx.send(content= "Visszaállítás, azaz reset gombok: ", components=[create_actionrow(*resetgombok)])
 

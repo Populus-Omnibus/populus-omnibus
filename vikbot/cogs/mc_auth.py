@@ -1,14 +1,15 @@
-from os import write
 import discord
 from discord.ext import commands
 from discord_slash import cog_ext, SlashContext
 import uuid
 import urllib.request, json 
 
-from server.filehandler import readsettings as read
-from server.filehandler import updatesettings as write
+import sys
 
-from server.updater import function as tester, servertester
+sys.path.append('/home/ubuntu/server')
+
+from filehandler import *
+from updater import *
 
 auth_options = [
     {
@@ -40,7 +41,7 @@ class mcauth(commands.Cog):
     @cog_ext.cog_slash(name="token", description="Megmutatja a regisztrált tokent", options=None, guild_ids=[308599429122883586])
     async def token_slash(self, ctx: SlashContext):
         await ctx.defer(hidden=True)
-        tmpdict = json.loads(read(segment="mc_acc"))
+        tmpdict = json.loads(readsettings(segment="mc_acc"))
         token = tmpdict[str(ctx.author.id)]["token"]
         dpname = tmpdict[str(ctx.author.id)]["displayname"]
         await ctx.send(content=f"Token: {token} | Displayname: {dpname}", hidden=True)
@@ -48,7 +49,7 @@ class mcauth(commands.Cog):
     @cog_ext.cog_slash(name="mcauth", description="Nem eredetis játékosok ezzel tudnak karaktert regisztrálni", options=auth_options, guild_ids=[308599429122883586])
     async def mcauth_slash(self, ctx: SlashContext, token, displayname):
         await ctx.defer(hidden=True)
-        tmpdict = json.loads(read(segment="mc_acc"))
+        tmpdict = json.loads(readsettings(segment="mc_acc"))
         accountdict = {}
 
         accountdict["id"] = str(uuid.uuid5(uuid.NAMESPACE_DNS, token))
@@ -71,15 +72,23 @@ class mcauth(commands.Cog):
 
         if gettoken == "" and getname == "" and token!= displayname :
                 tmpdict[str(ctx.author.id)] = accountdict
-                write(segment="mc_acc", data=tmpdict)
+                updatesettings(segment="mc_acc", data=json.dumps(tmpdict))
                 await ctx.send(content="Saved account", hidden=True)
                 print("saved new user")
         else:
             await ctx.send(content="Nem használhatsz online accountot `token`-ként és `displayname`-ként. A `token` és `displayname` nem egyezhet. :triumph:", hidden=True)
 
-    @commands.command()
+    @cog_ext.cog_slash(name = "startserver", description="Auth szerver indítása", options=None, guild_ids=[308599429122883586])
     async def start_server(self, ctx):
-        servertester()
+        await ctx.defer(hidden = True)
+        msg = servertester()
+        await ctx.send(content = msg, hidden = True)
+
+    @cog_ext.cog_slash(name="killserver", description="Auth szerver kinyírása", options=None, guild_ids=[308599429122883586])
+    async def kill_server(self, ctx):
+        await ctx.defer(hidden = True)
+        msg = serverkill()
+        await ctx.send(content = msg, hidden = True)
 
 def setup(client):
     client.add_cog(mcauth(client))
