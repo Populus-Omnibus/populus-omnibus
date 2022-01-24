@@ -92,4 +92,9 @@ class mcauth(commands.Cog):
 
 def setup(client):
     client.add_cog(mcauth(client))
+    print("mcauth is being loaded")
+
+def teardown(client):
+    client.remove_cog(mcauth(client))
+    print("mcauth is being unloaded")
 

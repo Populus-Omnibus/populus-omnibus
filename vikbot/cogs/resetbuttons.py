@@ -62,3 +62,8 @@ class resetbuttons(commands.Cog):
 
 def setup(client):
     client.add_cog(resetbuttons(client))
+    print("reset buttons are being loaded")
+
+def teardown(client):
+    client.remove_cog(resetbuttons(client))
+    print("reset buttons are being unloaded")

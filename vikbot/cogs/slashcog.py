@@ -240,3 +240,8 @@ class slash_command_support(commands.Cog):
 
 def setup(client):
     client.add_cog(slash_command_support(client))
+    print("role selector is being loaded")
+
+def teardown(client):
+    client.remove_cog(slash_command_support(client))
+    print("role selector is being unloaded")

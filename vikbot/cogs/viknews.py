@@ -1,10 +1,35 @@
 import re
 import os
+from unicodedata import name
 import discord
 import feedparser
 from discord.ext import commands, tasks
 from datetime import datetime
+from discord_slash import SlashContext, cog_ext
 
+import sys
+
+sys.path.append('/home/ubuntu/server')
+
+from filehandler import *
+
+def get_data():
+    tmpdict = (readsettings(segment="newschannels"))
+    return tmpdict
+
+addch = [{
+    "name":"channel",
+    "description": "Az a textchannel, ahova a hírek mennek",
+    "required": True,
+    "type": 7
+}]
+
+rmch = [{
+    "name":"channel",
+    "description": "Az a textchannel, ahova a hírek mennek",
+    "required": True,
+    "type": 7
+}]
 class News:
     def __init__(self, title, date, url, descr):
         self.title = title
@@ -31,7 +56,7 @@ class viknews_by_BoA(commands.Cog):
         
     @commands.Cog.listener()
     async def on_ready(self):
-        print('vik.bme.hu is ready')
+        print('viknews is ready')
         self.loops.start()
         
     @tasks.loop(seconds=10)
@@ -52,13 +77,11 @@ class viknews_by_BoA(commands.Cog):
                 embed.set_thumbnail(url= self.client.user.avatar_url)
                 embed.set_footer(text=news_list[index].date[:-9])
 
-                with open("viknews/newschannelids.txt", "r") as fp:
-                    lines = fp.readlines()
-                for x in lines:
-                    if(x==None):
-                        return
+                lib = get_data()
+
+                for x in lib:
                     csanel = self.client.get_channel(int(x))    #787045110168813598(announcement) 739557734705397812(viknews)
-                    await csanel.send(embed =embed)
+                    await csanel.send(embed = embed)
 
     @commands.command(brief = 'Hírek lekérése a vik.bme.huról.')
     async def viknews(self, ctx):
@@ -88,20 +111,26 @@ class viknews_by_BoA(commands.Cog):
         embed.set_footer(text=news_list[0].date[:-9])
         await ctx.channel.send(embed=embed)
 
-    @commands.command()
-    async def set_news_channel(self, ctx, id: int = 0):
-        global parentid
-        if(id ==0):
-            await ctx.send("Az id nem lehet 0")
+    @cog_ext.cog_slash(name="add_news_channel", description="Beállítja a channelt, amibe az új hírek fognak menni.", guild_ids=[], options=addch)
+    async def set_news_channel(self, ctx: SlashContext, channel):
+        await ctx.defer(hidden=True)
+
+        if channel.type == discord.ChannelType.text or channel.type == discord.ChannelType.news:
+            print("based")
+        else:
+            await ctx.send(content="Ez nem egy text channel :woman_shrugging:", hidden=True)
             return
-        with open("viknews/newschannelids.txt", 'a') as fp:
-            fp.write(f"{id}\n")
 
-    @commands.command()
-    async def get_news_channels(self,ctx):
+        lib = get_data()
+        lib.append(channel.id)
+        updatesettings(segment = "newschannels", data = lib)
+        await ctx.send(content=f"Saved newschannel: {channel.name}  with ID: `{channel.id}`", hidden=True)
 
-        with open("viknews/newschannelids.txt", "r") as fp:
-            lines = fp.readlines()
+    @cog_ext.cog_slash(name="get_news_channel", description="Mutatja az összes newschannelt", default_permission=False, options=None, guild_ids=[])
+    async def _get_news_channels(self, ctx: SlashContext):
+        ctx.defer(hidden=True)
+
+        lib = get_data()
 
         embed = discord.Embed(
             title = "News-channels",
@@ -109,25 +138,39 @@ class viknews_by_BoA(commands.Cog):
             timestamp = datetime.utcnow()
         )
         embed.set_thumbnail(url= self.client.user.avatar_url)
-        for x in lines:
-            if(x==None):
-                return
+        for x in lib:
             ch = self.client.get_channel(int(x))
-            embed.add_field(name=ch.name, value=f"Guild: {ch.guild}\n Category: {ch.category}\n Position: {ch.position}")
+            embed.add_field(name=ch.name, value=f"Guild: {ch.guild}\nCategory: {ch.category}\nPosition: {ch.position}")
 
-        await ctx.send(embed = embed)
+        await ctx.send(embed = embed, hidden=True)
 
-    @commands.command()
-    async def remove_news_channel(self, ctx, id: int):
-        with open("viknews/newschannelids.txt", "r") as fp:
-            lines = fp.readlines()
-        with open("viknews/newschannelids.txt", "w") as fp:
-            for line in lines:
-                if line.strip("\n") != f"{id}":
-                    fp.write(line)
+    @cog_ext.cog_slash(name="remove_news_channel", description="Beállítja a channelt, amibe az új hírek fognak menni.", guild_ids=[], options=rmch)
+    async def remove_news_channel(self, ctx: SlashContext, channel):
+        await ctx.defer(hidden=True)
+
+        if channel.type == discord.ChannelType.text or channel.type == discord.ChannelType.news:
+            print("based")
+        else:
+            await ctx.send(content="Ez nem egy text channel :woman_shrugging:", hidden=True)
+            return
+
+        lib = get_data()
+
+        if channel.id not in lib:
+            await ctx.send(content="Nincs ilyen channel elmentve :woman_shrugging:")
+            return
+
+        lib.remove(channel.id)
+        updatesettings(segment="newschannels", data = lib)
+        await ctx.send(content=f"Törölve: {channel.name}  with ID: `{channel.id}`", hidden=True)
 
 def setup(client):
     client.add_cog(viknews_by_BoA(client))
+    print("viknews is being loaded")
+
+def teardown(client):
+    client.remove_cog(viknews_by_BoA(client))
+    print("viknews is being unloaded")
 
 def get_news(url):
     clean = re.compile('<.*?>')

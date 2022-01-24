@@ -368,10 +368,11 @@ class trelloapi(commands.Cog):
 
         save_embed(tempdict=pages_json)
 
-    @commands.command()
-    async def testcog_trelloapi(self, ctx):
-        await ctx.send("Cog is ready")   
-
 def setup(client):
     client.add_cog(trelloapi(client))
+    print("trello api is being loaded")
+
+def teardown(client):
+    client.remove_cog(trelloapi(client))
+    print("trello api is being unloaded")
 

@@ -147,4 +147,9 @@ class roleosch(commands.Cog):
 
 def setup(client):
     client.add_cog(roleosch(client))
+    print("hardcoded roles are being loaded")
+
+def teardown(client):
+    client.remove_cog(roleosch(client))
+    print("hardcoded roles are being unloaded")
 
