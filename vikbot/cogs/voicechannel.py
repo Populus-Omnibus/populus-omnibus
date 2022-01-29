@@ -1,4 +1,3 @@
-from black import lib2to3_parse
 import discord
 from discord.ext import commands
 from datetime import datetime
@@ -72,6 +71,26 @@ class voicechannel(commands.Cog):
 
         await ctx.send(embed = embed, hidden = True)
 
+    @cog_ext.cog_slash(name="get_active_channels", description="Az összes létező dinamkus voice", options=None, guild_ids=[308599429122883586, 737284142462402560])
+    async def get_activechs(self, ctx):
+        await ctx.defer(hidden = True)
+
+        lib = get_data()
+
+        embed = discord.Embed(
+            title = "Active channels",
+            colour = discord.Colour.blue(),
+            timestamp = datetime.utcnow()
+        )
+        embed.set_thumbnail(url= self.client.user.avatar_url)
+        for x in lib["channels"]:
+            ch = self.client.get_channel(int(x))
+            if(ch == None):
+                continue
+            embed.add_field(name=ch.name, value=f"Guild: {ch.guild}\n Category: {ch.category}\n Position: {ch.position}")
+
+        await ctx.send(embed = embed, hidden = True)
+
     @cog_ext.cog_slash(name="remove_dynamic_channels", description="Töröl egy adott dinamikus voiceot", options=remove_pchannel_options, guild_ids=[308599429122883586, 737284142462402560])
     async def remove_parentchannel(self, ctx: SlashContext, channel):
         await ctx.defer(hidden = True)
@@ -108,6 +127,7 @@ class voicechannel(commands.Cog):
             await member.move_to(channel)
 
             lib["channels"].append(channel.id)
+            updatesettings(segment="voicechannels", data = lib)
 
         # ha lelép a kapott szobából
         if(before.channel != None and after.channel == None):
@@ -115,6 +135,7 @@ class voicechannel(commands.Cog):
             if(len(before.channel.members)==0 and int(before.channel.id) in content):
                 await before.channel.delete()
                 lib["channels"].remove(int(before.channel.id))
+                updatesettings(segment="voicechannels", data = lib)
 
         #ha ellép a kapott szobából
         if(before.channel != None and after.channel != None):
@@ -122,8 +143,9 @@ class voicechannel(commands.Cog):
             if(len(before.channel.members)==0 and int(before.channel.id) in content):
                 await before.channel.delete()
                 lib["channels"].remove(int(before.channel.id))
+                updatesettings(segment="voicechannels", data = lib)
 
-        updatesettings(segment="voicechannels", data = lib)
+        
 
 
 def setup(client):
