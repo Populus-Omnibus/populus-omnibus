@@ -1,0 +1,137 @@
+{
+    "type" : 1,
+    "components": [{
+        "type":3,
+        "custom_id": "gm_select",
+        "placeholder": "Géming roles",
+        "min_values": 0,
+        "max_values": 14,
+        "options": [{
+            "label" : "Minecraft Doomer",
+            "value" : "740528491367497781",
+            "description": null,
+            "emoji":{
+                "name": "💎",
+                "id" : null
+            }
+    },
+    {
+            "label" : "CS:GO chad",
+            "value" : "796695732740554764",
+            "description": null,
+            "emoji":{
+                "name": "🔫",
+                "id" : null
+            }
+    },
+    {
+            "label" : "LoL salt miner",
+            "value" : "796695564024283156",
+            "description": null,
+            "emoji":{
+                "name": "🦄",
+                "id" : null
+            }
+    },
+    {
+            "label" : "Actual R6:Siege player",
+            "value" : "796696220286058516",
+            "description": null,
+            "emoji":{
+                "name": "🔫",
+                "id" : null
+            }
+    },
+    {
+            "label" : "Valaki Among Us?",
+            "value" : "796696319640993812",
+            "description": null,
+            "emoji":{
+                "name": "🍖",
+                "id" : null
+            }
+    },
+    {
+            "label" : "Rocket League sportsman",
+            "value" : "894182437897244683",
+            "description": null,
+            "emoji":{
+                "name": "🏎️",
+                "id" : null
+            }
+    },
+    {
+            "label" : "Overwatch abuser",
+            "value" : "894183010759507978",
+            "description": null,
+            "emoji":{
+                "name": "👼",
+                "id" : null
+            }
+    },
+    {
+            "label" : "Apex enjoyer",
+            "value" : "894181680875712572",
+            "description": null,
+            "emoji":{
+                "name": "🔫",
+                "id" : null
+            }
+    },
+    {
+            "label" : "Factorio maniac",
+            "value" : "942007674973847622",
+            "description": null,
+            "emoji":{
+                "name": "⚙️",
+                "id" : null
+            }
+    },
+    {
+            "label" : "CIV builder",
+            "value" : "942008102545408000",
+            "description": null,
+            "emoji":{
+                "name": "🏙️",
+                "id" : null
+            }
+    },
+    {
+            "label" : "Don't Starve Together survivor",
+            "value" : "942009855265366017",
+            "description": null,
+            "emoji":{
+                "name": "🍲",
+                "id" : null
+            }
+    },
+    {
+            "label" : "Terraria challenger",
+            "value" : "942010109800886273",
+            "description": null,
+            "emoji":{
+                "name": "🪙",
+                "id" : null
+            }
+    },
+    {
+            "label" : "Space Engineers astronaut",
+            "value" : "942010273420693534",
+            "description": null,
+            "emoji":{
+                "name": "🚀",
+                "id" : null
+            }
+    },
+    {
+            "label" : "Chess mastermind",
+            "value" : "942010547799482409",
+            "description": null,
+            "emoji":{
+                "name": "♟️",
+                "id" : null
+            }
+    }
+    ]
+}]
+}

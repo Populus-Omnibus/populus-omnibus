@@ -101,7 +101,7 @@ async def list(ctx):
 
 @client.command()
 async def loadcogs(ctx):
-    load_cogs()
+    await load_cogs()
 
 @client.command()
 async def unloadcogs(ctx):
@@ -109,7 +109,7 @@ async def unloadcogs(ctx):
 
 @client.command()
 async def reloadcogs(ctx):
-    reload_cogs()
+    await reload_cogs()
     
 
 @client.group(brief = 'Cog maincommand')

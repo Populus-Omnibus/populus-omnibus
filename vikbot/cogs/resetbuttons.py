@@ -42,7 +42,7 @@ class resetbuttons(commands.Cog):
     async def on_ready(self):
         print('resetbuttons is ready')
     
-    @cog_ext.cog_slash(name="resetbuttons", description="Resetbutton menüsor", options=None, guild_ids=[308599429122883586])
+    @cog_ext.cog_slash(name="resetbuttons", description="Resetbutton menüsor", options=None, guild_ids=[308599429122883586, 737284142462402560])
     async def buttons(self, ctx):
         await ctx.send(content= "Visszaállítás, azaz reset gombok: ", components=[create_actionrow(*resetgombok)])
 
@@ -51,14 +51,14 @@ class resetbuttons(commands.Cog):
         if ctx.component_type == 3:
             return
 
-        await ctx.defer(hidden=True)
+        #await ctx.defer(hidden=True)
         roles = ctx.author.guild.roles
 
         for x in roles:
             if int(ctx.custom_id) == x.id:
                 await ctx.author.remove_roles(x)
                 
-        await ctx.send(content="Resetted role", hidden=True)
+        await ctx.reply(content="Resetted role.", hidden=True)
 
 def setup(client):
     client.add_cog(resetbuttons(client))

@@ -1,0 +1,83 @@
+{
+    "type" : 1,
+    "components": [{
+        "type":3,
+        "custom_id": "ping_select",
+        "placeholder": "Ping választó",
+        "min_values": 0,
+        "max_values": 8,
+        "options": [{
+            "label" : "Körtag: SEM",
+            "value" : "940647408247930880",
+            "description": "Schönherz Elektronikai Műhely",
+            "emoji":{
+                "name": "kor_sem",
+                "id" : 887738264700727347
+            }
+    },
+    {
+        "label" : "Körtag: Játszóház",
+        "value" : "884713029105766490",
+        "description": null,
+        "emoji":{
+            "name": "kor_jatszohaz",
+            "id" : 887738737583353896
+        }
+    },
+    {
+        "label" : "Körtag: Lanosch",
+        "value" : "889185131909226546",
+        "description": null,
+        "emoji":{
+            "name": "lanosch",
+            "id" : 887753575676121098
+        }
+    },
+    {
+        "label" : "Senior kolléga",
+            "value" : "744652294150291477",
+            "description": "Szent Schönherz Senior Lovagrend",
+            "emoji":{
+                "name": "sssl",
+                "id" : 887753588825280562
+            }
+    },
+    {
+        "label" : "Heti Funky Kérdések",
+            "value" : "942033741809844254",
+            "description": "A játszóház heti közönségszórakoztatói",
+            "emoji":{
+                "name": "🏷",
+                "id" : null
+            }
+    },
+    {   
+        "label" : "Körtag: HA5KFU",
+        "value" : "942069245649489920",
+        "description": "Rádióamatőr Klub",
+        "emoji":{
+            "name": "kor_ha5kfu",
+            "id" : 887738046290751518
+        }
+    },
+    {
+        "label" : "Heti Vikes",
+        "value" : "942073791788498974",
+        "description": "Vitaest a szerveren",
+        "emoji":{
+            "name": "🎙",
+            "id" : null
+        }
+    },
+    {
+        "label" : "Szerverevent",
+        "value" : "942119949957214280",
+        "description": "Ha event van a szerveren értesítést kapsz",
+        "emoji":{
+            "name": "🃏",
+            "id" : null
+        }
+    }
+    ]
+}]
+}

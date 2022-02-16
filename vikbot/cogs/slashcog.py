@@ -1,22 +1,13 @@
 import discord
-from discord import emoji
 from discord.enums import ContentFilter
 from discord.ext import commands
 from discord_slash import client, cog_ext, SlashContext
 from discord_slash.context import ComponentContext
-from discord_slash.utils.manage_components import create_actionrow, create_button, create_select, create_select_option
-from discord_slash.model import ButtonStyle
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from datetime import datetime, timedelta
 import pytz
 import asyncio
-
-buttons = [
-            create_button(
-                style=ButtonStyle.green,
-                label="A Green Button"
-            ),
-          ]
+import json
 
 gm_roles = [
     "740528491367497781", #1. mc
@@ -26,64 +17,46 @@ gm_roles = [
     "796696319640993812", #5. amogus
     "894182437897244683", #6. rocket league
     "894183010759507978", #7. overwatch
-    "894181680875712572" #8. apex
+    "894181680875712572", #8. apex
+    "942007674973847622", #9. factorio
+    "942008102545408000", #10. civ
+    "942009855265366017", #11. dont starve
+    "942010109800886273", #12. terraria
+    "942010273420693534", #13. space eng.
+    "942010547799482409" #14. sakk
     ]
 
-choice_ev = create_select(
-    options=[
-        create_select_option(label="Évfolyam: 2021", value="881250917113020488", emoji="🥼"),
-        create_select_option(label="Évfolyam: 2020", value="881250853950996531", emoji="🧪"),
-        create_select_option(label="Évfolyam: 2019", value="881250749521223680", emoji="🧫"),
-        create_select_option(label="Évfolyam: 2018", value="882334562095607868", emoji="🦠"),
-    ],
-    custom_id="ev_select",
-    placeholder="Évfolyamválasztó", 
-    min_values=1, 
-    max_values=1
-)
+ping_roles = [
+    "942033741809844254", #heti funky
+    "884713029105766490", # játszóház
+    "940647408247930880", #sem
+    "889185131909226546", #lanosch
+    "744652294150291477", #senior
+    "942069245649489920", #ha5kdu
+    "942073791788498974", #heti vikes
+    "942119949957214280" #joker
+]
 
-choice_ga = create_select(
-    options=[
-        create_select_option(label="Gárda: Fekete", value="744645865825632296", emoji="🖤"),
-        create_select_option(label="Gárda: Fehér", value="744644982396289219", emoji="🤍"),
-        create_select_option(label="Gárda: Kék", value="744644137499885629", emoji="💙"),
-        create_select_option(label="Gárda: Piros", value="744645871861366814", emoji="❤️"),
-        create_select_option(label="Gárda: Sárga", value="744644695216619571", emoji="💛"),
-    ],
-    custom_id="garda_select",
-    placeholder="Gárdaválasztó",  
-    min_values=1,  
-    max_values=1
-)
+gm_select = None
+year_select = None
+szak_select = None
+faction_select = None
+ping_select = None
 
-choice_ka = create_select(
-    options=[
-        create_select_option(label="Szak: Mérnökinfó", value="739565921047150784", emoji="📱"),
-        create_select_option(label="Szak: Villamosmérnök", value="739566045743939765", emoji="🚊"),
-        create_select_option(label="Szak: Üzemmérnök", value="739566632803893329", emoji="🕹"),
-    ],
-    custom_id="szak_select",
-    placeholder="Szakválasztó", 
-    min_values=1, 
-    max_values=1
-)
+with open("/home/ubuntu/bots/testbot/settings/roles/gm_roles.json", "r") as fp:
+    gm_select = json.loads(fp.read())
 
-choice_gm = create_select(
-    options=[
-        create_select_option(label="Minecraft Doomer", value="740528491367497781", emoji="💎"),
-        create_select_option(label="CS:GO chad", value="796695732740554764", emoji="🔫"),
-        create_select_option(label="LoL salt miner", value="796695564024283156", emoji="🦄"),
-        create_select_option(label="Actual R6:Siege player", value="796696220286058516", emoji="🔫"),
-        create_select_option(label="Valaki Among Us?", value="796696319640993812", emoji="🍖"),
-        create_select_option(label="Rocket League sportsman", value="894182437897244683", emoji="🏎️"),
-        create_select_option(label="Overwatch abuser", value="894183010759507978", emoji="👼"),
-        create_select_option(label="Apex enjoyer", value="894181680875712572", emoji="🔫"),
-    ],
-    custom_id="gm_select",
-    placeholder="Géming roles",
-    min_values=1,
-    max_values=8
-)
+with open("/home/ubuntu/bots/testbot/settings/roles/year_roles.json", "r") as fp:
+    year_select = json.loads(fp.read())
+
+with open("/home/ubuntu/bots/testbot/settings/roles/szak_roles.json", "r") as fp:
+    szak_select = json.loads(fp.read())
+
+with open("/home/ubuntu/bots/testbot/settings/roles/faction_roles.json", "r") as fp:
+    faction_select = json.loads(fp.read())
+
+with open("/home/ubuntu/bots/testbot/settings/roles/ping_roles.json", "r") as fp:
+    ping_select = json.loads(fp.read())
 
 class slash_command_support(commands.Cog):
     def __init__(self, client):
@@ -178,6 +151,11 @@ class slash_command_support(commands.Cog):
                 if str(m_role.id) in gm_roles and str(m_role.id) not in ctx.values:
                     await ctx.author.remove_roles(m_role)
 
+        if ctx.custom_id == "ping_select":
+            for m_role in member_roles:
+                if str(m_role.id) in ping_roles and str(m_role.id) not in ctx.values:
+                    await ctx.author.remove_roles(m_role)
+
         await ctx.send(embed=selected_roles, hidden=True)
 
         thisjob = self.scheduler.add_job(self.cooldowntimer, run_date=(datetime.now())+timedelta(seconds=5), id=f"{ctx.author.name}", args=[ctx.author.name])
@@ -196,21 +174,25 @@ class slash_command_support(commands.Cog):
                 await after.add_roles(givenrole)
                 return"""
 
-    @commands.command(hidden = True)
+    @cog_ext.cog_slash(name="year_select", guild_ids=[308599429122883586, 737284142462402560], options=None)
     async def ev_row(self, ctx):
-        await ctx.send(content="Az év amikor felvettek ide", components=[create_actionrow(choice_ev)])
+        await ctx.send(content="Az év amikor felvettek ide", components=[year_select])
 
-    @commands.command(hidden = True)
+    @cog_ext.cog_slash(name="faction_row", guild_ids=[308599429122883586, 737284142462402560], options=None)
     async def ga_row(self, ctx):
-        await ctx.send(content="A szín aminek tagja vagy", components=[create_actionrow(choice_ga)])
+        await ctx.send(content="A szín aminek tagja vagy", components=[faction_select])
 
-    @commands.command(hidden = True)
-    async def ka_row(self, ctx):
-        await ctx.send(content="Ebben a képzésben veszel részt", components=[create_actionrow(choice_ka)])
+    @cog_ext.cog_slash(name="szak_row", guild_ids=[308599429122883586, 737284142462402560], options=None)
+    async def _ka_row(self, ctx):
+        await ctx.send(content="Ebben a képzésben veszel részt", components=[szak_select])
 
-    @commands.command(hidden = True)
-    async def gm_row(self, ctx):
-        await ctx.send(content="Ilyen játékokkal játszol", components=[create_actionrow(choice_gm)])
+    @cog_ext.cog_slash(name="gm_row", guild_ids=[308599429122883586, 737284142462402560], options=None)
+    async def _gm_row(self, ctx):
+        await ctx.send(content="Ilyen játékokkal játszol", components=[gm_select])
+
+    @cog_ext.cog_slash(name="ping_row", guild_ids=[308599429122883586, 737284142462402560], options=None)
+    async def _ping_row(self, ctx):
+        await ctx.send(content="Ezekre a pingekre vagy kíváncsi", components=[ping_select])
     
     """@commands.command(hidden = True)
     async def check_roles(self, ctx):

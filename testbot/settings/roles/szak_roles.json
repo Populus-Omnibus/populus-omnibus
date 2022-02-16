@@ -1,0 +1,38 @@
+{
+    "type" : 1,
+    "components": [{
+        "type":3,
+        "custom_id": "szak_select",
+        "placeholder": "Szakválasztó",
+        "min_values": 1,
+        "max_values": 1,
+        "options": [{
+            "label" : "Szak: Mérnökinfó",
+            "value" : "739565921047150784",
+            "description": null,
+            "emoji":{
+                "name": "chip",
+                "id" : 942018904241340456
+            }
+    },
+    {
+            "label" : "Szak: Villamosmérnök",
+            "value" : "739566045743939765",
+            "description": null,
+            "emoji":{
+                "name": "ellenallatka",
+                "id" : 895375710926045204
+            }
+    },
+    {
+            "label" : "Szak: Üzemmérnök",
+            "value" : "739566632803893329",
+            "description": null,
+            "emoji":{
+                "name": "🕹",
+                "id" : null
+            }
+    }
+    ]
+}]
+}

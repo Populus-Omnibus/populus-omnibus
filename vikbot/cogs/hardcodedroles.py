@@ -10,8 +10,25 @@ gm_roles = [
     "796696319640993812", #5. amogus
     "894182437897244683", #6. rocket league
     "894183010759507978", #7. overwatch
-    "894181680875712572" #8. apex
+    "894181680875712572", #8. apex
+    "942007674973847622", #9. factorio
+    "942008102545408000", #10. civ
+    "942009855265366017", #11. dont starve
+    "942010109800886273", #12. terraria
+    "942010273420693534", #13. space eng.
+    "942010547799482409" #14. sakk
     ]
+
+ping_roles = [
+    "942033741809844254", #heti funky
+    "884713029105766490", # játszóház
+    "940647408247930880", #sem
+    "889185131909226546", #lanosch
+    "744652294150291477", #senior
+    "942069245649489920", #ha5kdu
+    "942073791788498974", #heti vikes
+    "942119949957214280" #joker
+]
 
 ev_roles = [
     "882334562095607868", #2018
@@ -57,7 +74,7 @@ class roleosch(commands.Cog):
             return 
 
         roles = before.guild.roles
-        generic_ev = generic_ga = generic_ka = gm_role = None
+        generic_ev = generic_ga = generic_ka = gm_role = ping_role = None
 
         addedroles = []
         removedroles = []
@@ -71,8 +88,10 @@ class roleosch(commands.Cog):
                 generic_ka = x
             elif str(x.id) == "796698649815285760":
                 gm_role = x
+            elif str(x.id) == "942031511568388167":
+                ping_role = x
 
-        if generic_ev==None or generic_ga==None or generic_ka==None or gm_role==None:
+        if generic_ev==None or generic_ga==None or generic_ka==None or gm_role==None or ping_role == None:
             print("failed to load roles")
             return
 
@@ -107,6 +126,11 @@ class roleosch(commands.Cog):
             if str(x.id) in gm_roles and x not in bfroles and x in afroles:
                 addedroles.append(gm_role)
 
+        for x in afroles:
+            if str(x.id) in ping_roles and x not in bfroles and x in afroles:
+                addedroles.append(ping_role)
+
+    
         await after.remove_roles(*removedroles)
         print(f"removed roles: {removedroles}")
         await after.add_roles(*addedroles)
