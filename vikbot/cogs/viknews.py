@@ -57,7 +57,7 @@ class viknews_by_BoA(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('viknews is ready')
-        self.loops.start()
+        #self.loops.start()
         
     @tasks.loop(seconds=10)
     async def loops(self):

@@ -151,6 +151,6 @@ async def kys(ctx):
     else:
         await ctx.channel.send("Te nem sorozhatsz be! :stuck_out_tongue_closed_eyes:")
 
-client.run("NzQxMDAwMDA0MTcyNTEzMzEw.XyxMCA.Rlqo4D9iswWEaXmmLbpITkBfSJQ")
+client.run("NzQxMDAwMDA0MTcyNTEzMzEw.XyxMCA.ywNA-dWHslUhqWVy1aqkmoKVxNQ")
 
 
