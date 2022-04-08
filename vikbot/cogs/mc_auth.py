@@ -1,3 +1,4 @@
+from asyncio import start_server
 import discord
 from discord.ext import commands
 from discord_slash import cog_ext, SlashContext
@@ -33,6 +34,7 @@ class mcauth(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('mcauth is ready')
+        print(start_server())
 
     @commands.command()
     async def testcog_mcauth(self, ctx):
