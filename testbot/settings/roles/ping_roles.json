@@ -61,6 +61,15 @@
         }
     },
     {
+        "label" : "Körtag: Pizzásch",
+        "value" : "970362840949080134",
+        "description": "Mitcsinálsz? Pizzát sütök!",
+        "emoji":{
+            "name": "pizzasch",
+            "id" : 887753578960265239
+        }
+    },
+    {
         "label" : "Heti Vikes",
         "value" : "942073791788498974",
         "description": "Vitaest a szerveren",
