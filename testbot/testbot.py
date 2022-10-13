@@ -1,4 +1,5 @@
 import asyncio
+import json
 import discord
 import os
 from discord.ext import commands
@@ -7,6 +8,10 @@ import interactions
 
 prefixes = []
 channelids = []
+
+def get_token():
+    with open("token.txt", "r") as fp:
+        return fp.read()
 
 async def get_prefix(client, message):
     if not message.guild:
@@ -160,5 +165,5 @@ async def list(ctx):
     await ctx.send(embed = embed)
 """
 
-client.run("NzQxMjAxNzg2NjA1NDA0MTgw.Xy0H9A.0JhGHYXkVpN8RReeTFNkNEFCUqw")
+client.run(get_token())
 

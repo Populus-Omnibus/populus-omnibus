@@ -5,6 +5,10 @@ from itertools import cycle
 from discord_slash import SlashCommand, SlashCommandOptionType
 import asyncio
 
+def get_token():
+    with open("token.txt", "r") as fp:
+        return fp.read()
+
 async def get_prefix(client, message):
     if not message.guild:
         return
@@ -151,6 +155,6 @@ async def kys(ctx):
     else:
         await ctx.channel.send("Te nem sorozhatsz be! :stuck_out_tongue_closed_eyes:")
 
-client.run("NzQxMDAwMDA0MTcyNTEzMzEw.XyxMCA.ywNA-dWHslUhqWVy1aqkmoKVxNQ")
+client.run(get_token())
 
 

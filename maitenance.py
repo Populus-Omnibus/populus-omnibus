@@ -6,6 +6,10 @@ from discord_slash import SlashCommand, SlashCommandOptionType
 
 prefixes = []
 
+def get_token():
+    with open("token.txt", "r") as fp:
+        return fp.read()
+
 async def get_prefix(client, message):
     if not message.guild:
         return
@@ -29,6 +33,6 @@ async def on_ready():
 		await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game(name="Karbantartás alatt"))
 		#await client.change_presence(status=discord.Status.away, activity=discord.Activity(type=discord.ActivityType.listening, name="@vikbot"))
 
-client.run("NzQxMDAwMDA0MTcyNTEzMzEw.XyxMCA.Rlqo4D9iswWEaXmmLbpITkBfSJQ")
+client.run("")
 
 
