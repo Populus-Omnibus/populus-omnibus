@@ -7,6 +7,15 @@
         "min_values": 1,
         "max_values": 1,
         "options": [{
+            "label" : "Évfolyam: 2022",
+            "value" : "1013340860986970173",
+            "description": null,
+            "emoji":{
+                "name": "👾",
+                "id" : null
+            }
+        },
+        {
             "label" : "Évfolyam: 2021",
             "value" : "881250917113020488",
             "description": null,
