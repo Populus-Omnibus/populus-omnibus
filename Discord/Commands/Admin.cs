@@ -1,20 +1,12 @@
 ﻿using DSharpPlus;
-using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using Populus;
 using Newtonsoft.Json;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Populus.Discord.Commands
 {
-    public class AdminSlash : ApplicationCommandModule
+    public abstract class AdminSlash : ApplicationCommandModule
     {
         [SlashCommand("roleselector", "Elküldi a rangválasztást lehetővé tévő üzenetet.")]
         public async Task SlashRoleSelector(InteractionContext ctx,
@@ -24,7 +16,7 @@ namespace Populus.Discord.Commands
         [Choice("Reset", 3)]
         [Option("tipus", "3 választó menü, illetve 1 reset üzenet")] long select)
         {
-            if(!ctx.Member.Roles.Where(p => DiscordBot.discordConfig.roles.adminRoles.ContainsValue(p.Id)).Any())
+            if(!ctx.Member.Roles.Any(p => DiscordBot.discordConfig.roles.adminRoles.ContainsValue(p.Id)))
             {
                 var responseBuilder = new DiscordInteractionResponseBuilder()
                 {
@@ -49,40 +41,44 @@ namespace Populus.Discord.Commands
                     DiscordBot.discordConfig.resetMessage = RoleResetButtonsSend(ctx).Id;
                     break;
             }
-            File.WriteAllText(StartHere.configFile, JsonConvert.SerializeObject(StartHere.config, Formatting.Indented));
+            await File.WriteAllTextAsync(StartHere.configFile, JsonConvert.SerializeObject(StartHere.config, Formatting.Indented));
         }
-        public DiscordMessage RoleSelectorDropdownSend(Dictionary<string, ulong> selectedRoles, string content, InteractionContext ctx)
+
+        private static DiscordMessage RoleSelectorDropdownSend(Dictionary<string, ulong> selectedRoles, string content, BaseContext ctx)
         {
             var options = new List<DiscordSelectComponentOption>();
             foreach (var role in selectedRoles)
             {
                 var rolename = Regex.Replace(role.Key, @"\p{Cs}|\p{So}", "");
-                options.Add(new DiscordSelectComponentOption(rolename, rolename, emoji: new DiscordComponentEmoji(role.Key.Replace(rolename, "")))); //wtf why does this work
+                options.Add(new DiscordSelectComponentOption(rolename, rolename,
+                    emoji: new DiscordComponentEmoji(role.Key.Replace(rolename, ""))));
             }
-            var dropdown = new DiscordSelectComponent("dropdown", null, options, false, 0, 1);
+
+            var dropdown = new DiscordSelectComponent("dropdown", null, options, false, 0);
             var builder = new DiscordMessageBuilder().WithContent(content).AddComponents(dropdown);
             var result = builder.SendAsync(ctx.Channel).Result;
-            ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+            
+            ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder
             {
                 Content = "Kész!",
                 IsEphemeral = true
             });
             return result;
         }
-        public DiscordMessage RoleResetButtonsSend(InteractionContext ctx)
+
+        private static DiscordMessage RoleResetButtonsSend(BaseContext ctx)
         {
             var builder = new DiscordMessageBuilder()
             .WithContent("Visszaállítás, azaz reset gombok:")
-            .AddComponents(new DiscordComponent[]
-            {
-                new DiscordButtonComponent(ButtonStyle.Danger, "rolereset1", "Évfolyam reset", false),
+            .AddComponents(
+                new DiscordButtonComponent(ButtonStyle.Danger, "rolereset1", "Évfolyam reset"),
                 new DiscordButtonComponent(ButtonStyle.Secondary, "x1", " ", true),
-                new DiscordButtonComponent(ButtonStyle.Danger, "rolereset2", "Szak reset", false),
-                new DiscordButtonComponent(ButtonStyle.Secondary, "x2", " ", true),     
-                new DiscordButtonComponent(ButtonStyle.Danger, "rolereset3", "Gárda reset", false)
-        });
+                new DiscordButtonComponent(ButtonStyle.Danger, "rolereset2", "Szak reset"),
+                new DiscordButtonComponent(ButtonStyle.Secondary, "x2", " ", true),
+                new DiscordButtonComponent(ButtonStyle.Danger, "rolereset3", "Gárda reset"));
             var result = builder.SendAsync(ctx.Channel).Result;
-            ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+            
+            ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder
             {
                 Content = "Kész!",
                 IsEphemeral = true

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 
 namespace Populus.Discord
 {
-    public class Events
+    public static class Events
     {
         public static async Task ComponentInteractionCreatedAsync(ComponentInteractionCreateEventArgs eventArgs)
         {
@@ -39,15 +34,15 @@ namespace Populus.Discord
                 }
             }
         }
-        public static async Task AddSingleRole(Dictionary<string, ulong> roles, ComponentInteractionCreateEventArgs eventArgs)
+
+        private static async Task AddSingleRole(Dictionary<string, ulong> roles, ComponentInteractionCreateEventArgs eventArgs)
         {
             string? rolename = eventArgs.Values.FirstOrDefault();
-            ulong roleID = 0;
             DiscordRole? toAdd = null;
             if (rolename != null)
             {
-                roleID = roles.Where(p => p.Key.Contains(rolename)).FirstOrDefault().Value;
-                toAdd = eventArgs.Guild.GetRole(roleID);
+                ulong roleId = roles.FirstOrDefault(p => p.Key.Contains(rolename)).Value;
+                toAdd = eventArgs.Guild.GetRole(roleId);
             }
             if (toAdd != null)
             {
@@ -67,7 +62,8 @@ namespace Populus.Discord
                 });
             }
         }
-        public static async Task DeleteRoles(Dictionary<string, ulong> roles, ComponentInteractionCreateEventArgs eventArgs)
+
+        private static async Task DeleteRoles(Dictionary<string, ulong> roles, ComponentInteractionCreateEventArgs eventArgs)
         {
             foreach (var role in roles)
             {

@@ -1,76 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+namespace Populus;
 
-namespace Populus
+public static class StartHere
 {
-    
-    public class StartHere
+    //TODO: list services using ServiceProvider
+    public const string configFile = "config.json";
+    public static Configuration config { get; private set; } = null!;
+
+    public static void Main(string[] args)
     {
-        public static Configuration config = new Configuration();
-        public static string configFile = "config.json";
-        public static void Main(string[] args)
+        try
         {
-            try
-            {
-                config = LoadConfig();
-                if (config.discordConfig != null)
-                    Discord.DiscordBot.MainAsync(config.discordConfig).GetAwaiter().GetResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return;
-            }
+            config = LoadConfig(); //config is initialised here, failure means some or all of it is null
+            Discord.DiscordBot.MainAsync(config.discordConfig!).GetAwaiter().GetResult();
         }
-
-
-        public static string GetTime()
+        catch (FileNotFoundException e) //failure jumps here
         {
-            return DateTime.Now.ToString("HH:mm:ss");
-        }
-        private static Configuration LoadConfig()
-        {
-            if (File.Exists(configFile))
-            {
-                var result = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(configFile));
-                if (result != null)
-                    return result;
-            }
-
-            return new Configuration();
+            Console.WriteLine(e.Message);
         }
     }
 
 
-    public class Configuration
+    public static string GetTime()
     {
-        public DiscordConfig? discordConfig = default;
+        return DateTime.Now.ToString("HH:mm:ss");
     }
-
-    public class DiscordConfig
+    private static Configuration LoadConfig()
     {
-        //basic setup
-        public string prefix { get; set; } = default!;
-        public string discordToken { get; set; } = default!;
-        //channels
-        public ulong newsChannel { get; set; }
-        //roles
-        public DiscordRoles roles { get; set; } = default!;
-        public ulong yearMessage { get; set; }
-        public ulong courseMessage { get; set; }        
-        public ulong colorMessage { get; set; }
-        public ulong resetMessage { get; set; }
-    }
-    public class DiscordRoles
-    {
-        public Dictionary<string, ulong> gamingRoles { get; set; } = default!;
-        public Dictionary<string, ulong> yearRoles { get; set; } = default!;
-        public Dictionary<string, ulong> courseRoles { get; set; } = default!;
-        public Dictionary<string, ulong> colorRoles { get; set; } = default!;
-        public Dictionary<string, ulong> adminRoles { get; set; } = default!;
+        return JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(configFile))
+               ?? throw new FileNotFoundException(); //if this fails, we can't run the app anyway
     }
 }
