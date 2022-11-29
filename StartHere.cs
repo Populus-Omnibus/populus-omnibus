@@ -12,7 +12,7 @@ public static class StartHere
         try
         {
             config = LoadConfig(); //config is initialised here, failure means some or all of it is null
-            Discord.DiscordBot.MainAsync(config.discordConfig!).GetAwaiter().GetResult();
+            Discord.DiscordBot.MainAsync(config.discordConfig).GetAwaiter().GetResult();
         }
         catch (FileNotFoundException e) //failure jumps here
         {

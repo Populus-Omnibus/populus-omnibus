@@ -10,6 +10,7 @@ public class DiscordConfig
     //basic setup
     public string prefix { get; set; } = default!;
     public string discordToken { get; set; } = default!;
+    public ulong serverId { get; set; }
     //channels
     public ulong newsChannel { get; set; }
     //roles

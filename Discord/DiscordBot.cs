@@ -36,8 +36,8 @@ namespace Populus.Discord
                 //TODO: handler class for interactions other than slash commands
                 //discordClient.MessageCreated += async (s, e) => await Events.MessageReceivedAsync(e.Message);
                 await slashCommands.RefreshCommands();
-                slashCommands.RegisterCommands<MiscSlash>(724740489517203550);
-                slashCommands.RegisterCommands<AdminSlash>(724740489517203550);
+                slashCommands.RegisterCommands<MiscSlash>(discordConfig.serverId);
+                slashCommands.RegisterCommands<AdminSlash>(discordConfig.serverId);
                 await discordClient.ConnectAsync();
                 await Task.Delay(-1);
             }
